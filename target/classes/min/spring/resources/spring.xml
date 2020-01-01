@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans  xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:p="http://www.springframework.org/schema/p"
+        xmlns:aop="http://www.springframework.org/schema/aop"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:tx="http://www.springframework.org/schema/tx"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-4.2.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+        
+	<context:component-scan base-package="min.spring" use-default-filters="true">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	<!--数据库连接池-->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="jdbcUrl" value="jdbc:mysql://127.0.0.1:3306/db_name"/>
+        <property name="user" value="root"/>
+        <property name="password" value="123456"/>
+        <!-- 初始连接池大小 -->
+        <property name="initialPoolSize" value="10"/>
+        <!-- 连接池中连接最小个数 -->
+        <property name="minPoolSize" value="5"/>
+        <property name="maxPoolSize" value="20"/>
+     </bean>
+ 
+ 
+    <!-- 配置SqlSessionFactory对象 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 注入数据库连接池 -->
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:min/spring/resources/mybatis-config.xml"/>
+ 		<!-- 映射mapper文件 -->
+       	<property name="mapperLocations">
+       		<list>
+       			<value>classpath:min/spring/mapping/*.xml</value>
+       		</list>
+       	</property>
+    </bean>
+    <!-- 事务管理器 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    
+	 <!--配置classInfoMapper对象 -->
+    <bean id="classInfoMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="mapperInterface" value="min.spring.dao.ClassInfoMapper"/>
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>
+	 <!--配置gradeInfoMapper对象 -->
+	<bean id="gradeInfoMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="min.spring.dao.GradeInfoMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	 <!--配置schoolInfoMapper对象 -->
+	<bean id="schoolInfoMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="min.spring.dao.SchoolInfoMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	 <!--配置studentInfoMapper对象 -->
+	 <bean id="studentInfoMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="mapperInterface" value="min.spring.dao.StudentInfoMapper"/>
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>
+	 <!--配置teacherInfoMapper对象 -->
+	<bean id="teacherInfoMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="min.spring.dao.TeacherInfoMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	
+	
+	<bean id="studentInfoService" class="min.spring.service.impl.StudentInfoServiceImpl">
+		<property name="studentInfoMapper" ref="studentInfoMapper"></property>
+	</bean>
+	<bean id="schoolInfoService" class="min.spring.service.impl.SchoolInfoServiceImpl">
+		<property name="schoolInfoMapper" ref="schoolInfoMapper"></property>
+	</bean>
+	<bean id="teacherInfoService" class="min.spring.service.impl.TeacherInfoServiceImpl">
+		<property name="teacherInfoMapper" ref="teacherInfoMapper"></property>
+	</bean>
+	<bean id="gradeInfoService" class="min.spring.service.impl.GradeInfoServiceImpl">
+		<property name="gradeInfoMapper" ref="gradeInfoMapper"></property>
+	</bean>
+	<bean id="classInfoService" class="min.spring.service.impl.ClassInfoServiceImpl">
+		<property name="classInfoMapper" ref="classInfoMapper"></property>
+	</bean>
+	
+	
+	
+	
+	 <!-- activemq jms -->
+	 <!-- activeMQ为我们提供的connectionFactory -->
+	 <bean id="activeMqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+	 	<property name="brokerURL" value="tcp://192.168.1.137:61616"/>
+	 </bean>
+	 
+	 <!--spring jms为我们提供的连接池-->
+    <bean id="connectionFactory" class="org.springframework.jms.connection.SingleConnectionFactory">
+        <property name="targetConnectionFactory" ref="activeMqConnectionFactory"/>
+    </bean>
+	
+	<!--队列模式目的地-->
+    <bean id="queueDestination" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="queue"/>
+    </bean>
+
+    <!--主题模式目的地-->
+<!--     <bean id="topicDestination" class="org.apache.activemq.command.ActiveMQTopic"> -->
+<!--         <constructor-arg value="topic"/> -->
+<!--     </bean> -->
+	
+	
+	 <!-- 基于aspectJ的xml方式声明 -->
+	<!-- 配置事务的通知，（事务的增强） -->
+	 <tx:advice id="txAdvice" transaction-manager="transactionManager">
+	 	<tx:attributes>
+	 	<!-- 
+	 		propagation:事务的传播行为
+	 		isolation ：事务的隔离级别
+	 		read-only：是否只读
+	 		rollback-for：发生哪些异常回滚
+	 		no-rollback-for ： 发生哪些异常不回滚
+	 		timeout：超时信息
+	 	 -->
+	 		<tx:method name="*"  propagation="REQUIRED"/>
+	 	</tx:attributes>
+	 </tx:advice>
+	 <!-- 配置切面 -->
+	 <aop:config>
+	 <!-- 切入点 -->
+	 	<aop:pointcut expression="execution(* min.spring.service.*.*(..))" id="pointcut1"/>
+	 	<!-- 配置切面 -->
+	 	<aop:advisor advice-ref="txAdvice" pointcut-ref="pointcut1"/>
+	 </aop:config>
+	
+	 <!-- 开启注解事务 -->
+	 <tx:annotation-driven transaction-manager="transactionManager"/>
+	 
+	
+	 
+	 
+</beans>

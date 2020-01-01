@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="min.spring.dao.StudentInfoMapper" >
+  <resultMap id="BaseResultMap" type="min.spring.vo.StudentInfo" >
+    <id column="student_code" property="studentCode" jdbcType="VARCHAR" />
+    <result column="student_name" property="studentName" jdbcType="VARCHAR" />
+    <result column="student_age" property="studentAge" jdbcType="INTEGER" />
+    <result column="student_gender" property="studentGender" jdbcType="INTEGER" />
+    <result column="student_tel" property="studentTel" jdbcType="VARCHAR" />
+    <result column="student_address" property="studentAddress" jdbcType="VARCHAR" />
+    <result column="student_school" property="studentSchool" jdbcType="VARCHAR" />
+    <result column="student_grade" property="studentGrade" jdbcType="INTEGER" />
+    <result column="student_class" property="studentClass" jdbcType="INTEGER" />
+    <result column="teacher_code" property="teacherCode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    student_code, student_name, student_age, student_gender, student_tel, student_address, 
+    student_school, student_grade, student_class, teacher_code
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from student_info
+    where student_code = #{studentCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from student_info
+    where student_code = #{studentCode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="min.spring.vo.StudentInfo" >
+    insert into student_info (student_code, student_name, student_age, 
+      student_gender, student_tel, student_address, 
+      student_school, student_grade, student_class, 
+      teacher_code)
+    values (#{studentCode,jdbcType=VARCHAR}, #{studentName,jdbcType=VARCHAR}, #{studentAge,jdbcType=INTEGER}, 
+      #{studentGender,jdbcType=INTEGER}, #{studentTel,jdbcType=VARCHAR}, #{studentAddress,jdbcType=VARCHAR}, 
+      #{studentSchool,jdbcType=VARCHAR}, #{studentGrade,jdbcType=INTEGER}, #{studentClass,jdbcType=INTEGER}, 
+      #{teacherCode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="min.spring.vo.StudentInfo" >
+    insert into student_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="studentCode != null" >
+        student_code,
+      </if>
+      <if test="studentName != null" >
+        student_name,
+      </if>
+      <if test="studentAge != null" >
+        student_age,
+      </if>
+      <if test="studentGender != null" >
+        student_gender,
+      </if>
+      <if test="studentTel != null" >
+        student_tel,
+      </if>
+      <if test="studentAddress != null" >
+        student_address,
+      </if>
+      <if test="studentSchool != null" >
+        student_school,
+      </if>
+      <if test="studentGrade != null" >
+        student_grade,
+      </if>
+      <if test="studentClass != null" >
+        student_class,
+      </if>
+      <if test="teacherCode != null" >
+        teacher_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="studentCode != null" >
+        #{studentCode,jdbcType=VARCHAR},
+      </if>
+      <if test="studentName != null" >
+        #{studentName,jdbcType=VARCHAR},
+      </if>
+      <if test="studentAge != null" >
+        #{studentAge,jdbcType=INTEGER},
+      </if>
+      <if test="studentGender != null" >
+        #{studentGender,jdbcType=INTEGER},
+      </if>
+      <if test="studentTel != null" >
+        #{studentTel,jdbcType=VARCHAR},
+      </if>
+      <if test="studentAddress != null" >
+        #{studentAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="studentSchool != null" >
+        #{studentSchool,jdbcType=VARCHAR},
+      </if>
+      <if test="studentGrade != null" >
+        #{studentGrade,jdbcType=INTEGER},
+      </if>
+      <if test="studentClass != null" >
+        #{studentClass,jdbcType=INTEGER},
+      </if>
+      <if test="teacherCode != null" >
+        #{teacherCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="min.spring.vo.StudentInfo" >
+    update student_info
+    <set >
+      <if test="studentName != null" >
+        student_name = #{studentName,jdbcType=VARCHAR},
+      </if>
+      <if test="studentAge != null" >
+        student_age = #{studentAge,jdbcType=INTEGER},
+      </if>
+      <if test="studentGender != null" >
+        student_gender = #{studentGender,jdbcType=INTEGER},
+      </if>
+      <if test="studentTel != null" >
+        student_tel = #{studentTel,jdbcType=VARCHAR},
+      </if>
+      <if test="studentAddress != null" >
+        student_address = #{studentAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="studentSchool != null" >
+        student_school = #{studentSchool,jdbcType=VARCHAR},
+      </if>
+      <if test="studentGrade != null" >
+        student_grade = #{studentGrade,jdbcType=INTEGER},
+      </if>
+      <if test="studentClass != null" >
+        student_class = #{studentClass,jdbcType=INTEGER},
+      </if>
+      <if test="teacherCode != null" >
+        teacher_code = #{teacherCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where student_code = #{studentCode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="min.spring.vo.StudentInfo" >
+    update student_info
+    set student_name = #{studentName,jdbcType=VARCHAR},
+      student_age = #{studentAge,jdbcType=INTEGER},
+      student_gender = #{studentGender,jdbcType=INTEGER},
+      student_tel = #{studentTel,jdbcType=VARCHAR},
+      student_address = #{studentAddress,jdbcType=VARCHAR},
+      student_school = #{studentSchool,jdbcType=VARCHAR},
+      student_grade = #{studentGrade,jdbcType=INTEGER},
+      student_class = #{studentClass,jdbcType=INTEGER},
+      teacher_code = #{teacherCode,jdbcType=VARCHAR}
+    where student_code = #{studentCode,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <resultMap id="findResultMap" type="min.spring.vo.StudentInfo" >
+    <id column="student_code" property="studentCode" jdbcType="VARCHAR" />
+    <result column="student_name" property="studentName" jdbcType="VARCHAR" />
+    <result column="student_age" property="studentAge" jdbcType="INTEGER" />
+    <result column="student_gender" property="studentGender" jdbcType="INTEGER" />
+    <result column="student_tel" property="studentTel" jdbcType="VARCHAR" />
+    <result column="student_address" property="studentAddress" jdbcType="VARCHAR" />
+    <result column="student_school" property="studentSchool" jdbcType="VARCHAR" />
+    <result column="student_grade" property="studentGrade" jdbcType="INTEGER" />
+    <result column="student_class" property="studentClass" jdbcType="INTEGER" />
+    <result column="teacher_code" property="teacherCode" jdbcType="VARCHAR" />
+    <association property="schoolInfo" javaType="min.spring.vo.SchoolInfo">
+    	<id column="school_code" property="schoolCode" jdbcType="VARCHAR" />
+	    <result column="school_name" property="schoolName" jdbcType="VARCHAR" />
+	    <result column="school_address" property="schoolAddress" jdbcType="VARCHAR" />
+    </association>
+    <association property="teacherInfo" javaType="min.spring.vo.TeacherInfo">
+    	<id column="teacher_code" property="teacherCode" jdbcType="VARCHAR" />
+    	<result column="teacher_name" property="teacherName" jdbcType="VARCHAR" />
+    </association>
+    <association property="gradeInfo" javaType="min.spring.vo.GradeInfo">
+    	<id column="grade_id" property="gradeId" jdbcType="INTEGER" />
+    	<result column="grade_name" property="gradeName" jdbcType="VARCHAR" />
+    </association>
+    <association property="classInfo" javaType="min.spring.vo.ClassInfo">
+    	 <id column="class_id" property="classId" jdbcType="INTEGER" />
+   		 <result column="class_name" property="className" jdbcType="VARCHAR" />
+    </association>
+  </resultMap>
+  
+  <select id="findStudentInfosByPage" parameterType="map" resultMap="findResultMap">
+  	select stu.student_code,stu.student_name,stu.student_age,stu.student_gender,stu.student_tel,stu.student_address,
+  			
+  			sch.school_name,tea.teacher_name,gra.grade_name,cla.class_name
+  			
+  			from student_info stu, school_info sch ,teacher_info tea,grade_info gra,class_info cla
+  			<where>
+  				stu.student_school = sch.school_code and stu.teacher_code = tea.teacher_code
+  				and stu.student_grade = gra.grade_id and stu.student_class = cla.class_id
+  				<if test="studentInfo.studentCode">
+  					and stu.student_code like "%"#{studentInfo.studentCode}"%"
+  				</if>
+  				<if test="studentInfo.studentName">
+  					and stu.student_name like "%"#{studentInfo.studentName}"%"
+  				</if>
+  			</where>
+  </select>
+  
+  <select id="findStudentCodeBySchool" parameterType="string" resultMap="BaseResultMap">
+  	select  <include refid="Base_Column_List" />
+  	from student_info where student_school = #{schoolCode,jdbcType=VARCHAR} 
+  	order by student_code desc limit 0,1
+  </select>
+</mapper>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="min.spring.dao.SchoolInfoMapper" >
+  <resultMap id="BaseResultMap" type="min.spring.vo.SchoolInfo" >
+    <id column="school_code" property="schoolCode" jdbcType="VARCHAR" />
+    <result column="school_name" property="schoolName" jdbcType="VARCHAR" />
+    <result column="school_address" property="schoolAddress" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    school_code, school_name, school_address
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from school_info
+    where school_code = #{schoolCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from school_info
+    where school_code = #{schoolCode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="min.spring.vo.SchoolInfo" >
+    insert into school_info (school_code, school_name, school_address
+      )
+    values (#{schoolCode,jdbcType=VARCHAR}, #{schoolName,jdbcType=VARCHAR}, #{schoolAddress,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="min.spring.vo.SchoolInfo" >
+    insert into school_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="schoolCode != null" >
+        school_code,
+      </if>
+      <if test="schoolName != null" >
+        school_name,
+      </if>
+      <if test="schoolAddress != null" >
+        school_address,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="schoolCode != null" >
+        #{schoolCode,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolName != null" >
+        #{schoolName,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolAddress != null" >
+        #{schoolAddress,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="min.spring.vo.SchoolInfo" >
+    update school_info
+    <set >
+      <if test="schoolName != null" >
+        school_name = #{schoolName,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolAddress != null" >
+        school_address = #{schoolAddress,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where school_code = #{schoolCode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="min.spring.vo.SchoolInfo" >
+    update school_info
+    set school_name = #{schoolName,jdbcType=VARCHAR},
+      school_address = #{schoolAddress,jdbcType=VARCHAR}
+    where school_code = #{schoolCode,jdbcType=VARCHAR}
+  </update>
+	
+	<select id="findSchoolInfos" resultMap="BaseResultMap">
+		select * from school_info
+	</select>  
+</mapper>
